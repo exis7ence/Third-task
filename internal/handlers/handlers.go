@@ -64,11 +64,6 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer outputFile.Close()
 
-	if _, err := outputFile.Write([]byte{0xEF, 0xBB, 0xBF}); err != nil {
-		http.Error(w, "Error writing BOM: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	_, err = outputFile.WriteString(result)
 	if err != nil {
 		http.Error(w, "Error writing to file", http.StatusInternalServerError)
@@ -77,7 +72,5 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-
-	w.Write([]byte{0xEF, 0xBB, 0xBF})
 	w.Write([]byte(result))
 }
